@@ -191,7 +191,7 @@ const TC=['#ffd84d','#4fc3ff','#4be39a','#ff8fb1','#ffa64d','#c9a7ff'];
 const NAMES=['Elang','Harimau','Naga','Rajawali','Banteng','Komodo'];
 const KEY='sdq_v2';
 function defS(){return{pin:'1234',snd:1,incB1:1,nT:4,tn:[...NAMES],
- students:Array.from({length:18},(_,i)=>({id:'s'+(i+1),name:'Murid '+String(i+1).padStart(2,'0'),team:i%4})),
+ students:['Amira','Fani','Arya','Azbi','Fadel','Indrika','Agus','Bilal','Fathir','Farid','Niswa','Aqila','Daffa','Saheer','Aminah','Ummi'].map((n,i)=>({id:'s'+(i+1),name:n,team:i%4})),
  open:{1:1,2:0,3:0},b1:{claims:{},att:{}},b2:{cur:null,ring:null,tried:[],done:{}},
  b3:{fin:null,turn:0,relay:null,done:{},pts:{},ended:0}}}
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
