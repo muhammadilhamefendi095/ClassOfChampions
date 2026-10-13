@@ -286,19 +286,19 @@ const A={
  resetB(d){if(!confirm('Reset data '+d.b+'?'))return;
   if(d.b==='b1')S.b1={claims:{},att:{}};if(d.b==='b2')S.b2={cur:null,ring:null,tried:[],done:{}};if(d.b==='b3')S.b3={fin:null,turn:0,relay:null,done:{},pts:{},ended:0};
   if(d.b==='all'){const p=S.pin;S=defS();S.pin=p}save();render()},
- /* ---- Board 1 ---- */
+ /* ---- Tantangan 1 ---- */
  b1q(d){const q=B1[+d.i],cl=S.b1.claims[q.id];
   if(sess.role==='guru'){showDlg(`<h2>No ${+d.i+1} · ${'★'.repeat(q.l)}</h2><div class="qbig">${fx(q.q)}</div><div class="keybox"><b>Kunci:</b> ${fx(esc(q.a))}</div>
    ${cl?`<p>Dijawab benar oleh <b>${esc(stu(cl.sid)?.name||'?')}</b> (+${cl.p})</p><button class="red" data-a="b1reopen" data-i="${d.i}">Buka ulang kartu</button> `:''}<button class="ghost" data-a="dx">Tutup</button>`);return}
-  if(!S.open[1])return toast('Board 1 belum dibuka guru');
+  if(!S.open[1])return toast('Tantangan 1 belum dibuka guru');
   if(cl)return toast('Soal ini sudah dijawab benar');
   const me=stu(sess.sid);
-  openKeypad({sub:`Board 1 · Soal No ${+d.i+1} · ${'★'.repeat(q.l)} (+${PTS[q.l]} poin)`,q:fx(q.q),t:q.t,key:q.a,
+  openKeypad({sub:`Tantangan 1 · Soal No ${+d.i+1} · ${'★'.repeat(q.l)} (+${PTS[q.l]} poin)`,q:fx(q.q),t:q.t,key:q.a,
    commit(ok){const k=q.id;S.b1.att[me.id+'|'+k]=(S.b1.att[me.id+'|'+k]||0)+1;
     if(ok){if(S.b1.claims[k])return{msg:'Soal ini sudah diambil temanmu lebih dulu.',retry:false};S.b1.claims[k]={sid:me.id,p:PTS[q.l]};return{msg:`Hebat! Kamu mendapat <b>+${PTS[q.l]} poin</b>.`}}
     return{msg:'Belum tepat, tidak ada pengurangan poin. Periksa lagi bentuk jawabannya.',retry:true}}})},
  b1reopen(d){delete S.b1.claims[B1[+d.i].id];save();$('#dlg').close()},
- /* ---- Board 2 ---- */
+ /* ---- Tantangan 2 ---- */
  b2start(d){if(S.b2.cur!=null&&!S.b2.done[S.b2.cur])return toast('Selesaikan soal yang sedang berjalan');
   S.b2.cur=+d.i;S.b2.ring=null;S.b2.tried=[];save();render()},
  b2bell(d){const b=S.b2,t=+d.t;if(b.cur==null||b.done[b.cur]||b.ring!=null||b.tried.includes(t))return;b.ring=t;save();sndBell();render()},
@@ -306,21 +306,21 @@ const A={
  b2close(){const b=S.b2;b.done[b.cur]={team:null,p:0};b.ring=null;save();render()},
  b2next(){S.b2.cur=null;S.b2.ring=null;S.b2.tried=[];save();render()},
  b2ans(){const b=S.b2,i=b.cur,q=B2[i],t=b.ring;if(t==null)return;
-  openKeypad({sub:`Board 2 · Soal ${i+1} · <b style="color:${tcol(t)}">Tim ${esc(tname(t))}</b> (+${B2PTS} poin)`,q:fx(q.q),t:q.t,key:q.a,
+  openKeypad({sub:`Tantangan 2 · Soal ${i+1} · <b style="color:${tcol(t)}">Tim ${esc(tname(t))}</b> (+${B2PTS} poin)`,q:fx(q.q),t:q.t,key:q.a,
    commit(ok){if(S.b2.done[i])return{msg:'Soal ini sudah selesai.'};
     if(ok){S.b2.done[i]={team:t,p:B2PTS};S.b2.ring=null;return{msg:`<b>Tim ${esc(tname(t))}</b> merebut <b>+${B2PTS} poin</b>!`,extra:`<div class="keybox"><b>Pembahasan:</b> ${fx(q.e)}</div>`}}
     S.b2.tried.push(t);S.b2.ring=null;
     if(S.b2.tried.length>=S.nT){S.b2.done[i]={team:null,p:0};return{msg:'Semua tim sudah mencoba. Kita bahas bersama.',extra:`<div class="keybox"><b>Kunci:</b> ${fx(q.e)}</div>`}}
     return{msg:`Tim ${esc(tname(t))} belum tepat. Tanpa pengurangan poin, kesempatan untuk tim lain!`}}})},
- /* ---- Board 3 ---- */
- setFin(){const r=rankTeams();if(r.length<2)return;if(Object.keys(S.b3.done).length&&!confirm('Board 3 sudah berjalan. Ganti finalis dan reset Board 3?'))return;
+ /* ---- Tantangan 3 ---- */
+ setFin(){const r=rankTeams();if(r.length<2)return;if(Object.keys(S.b3.done).length&&!confirm('Tantangan 3 sudah berjalan. Ganti finalis dan reset Tantangan 3?'))return;
   S.b3={fin:[r[0],r[1]],turn:0,relay:null,done:{},pts:{},ended:0};save();render()},
  setFinManual(){const a=+$('#f1').value,b=+$('#f2').value;if(a===b)return toast('Pilih dua tim berbeda');S.b3={fin:[a,b],turn:0,relay:null,done:{},pts:{},ended:0};save();render()},
  b3turn(){S.b3.turn=1-S.b3.turn;save();render()},
  b3end(){S.b3.ended=1;save();render();sndOk()},
  b3q(d){const b=S.b3,i=+d.i,q=B3[i];
   if(!b.fin)return;if(b.done[i])return toast('Kartu sudah dipakai');if(b.ended)return toast('Pertandingan sudah selesai');
-  if(sess.role==='murid'&&!S.open[3])return toast('Board 3 belum dibuka guru');
+  if(sess.role==='murid'&&!S.open[3])return toast('Tantangan 3 belum dibuka guru');
   const active=b.relay?b.relay.team:b.fin[b.turn];
   if(b.relay&&b.relay.i!==i)return toast('Selesaikan dulu kartu '+B3[b.relay.i].code);
   if(sess.role==='murid'&&stu(sess.sid).team!==active)return toast('Sekarang giliran Tim '+tname(active));
@@ -340,8 +340,8 @@ function render(){
  if(!sess){a.innerHTML=landing();return}
  if(sess.role==='murid'&&!stu(sess.sid)){setSess(null);return render()}
  const guru=sess.role==='guru',me=guru?null:stu(sess.sid);
- const tabs=guru?[['home','Beranda'],['siswa','Murid & Kelompok'],['b1','Board 1'],['b2','Board 2'],['b3','Board 3'],['kunci','Kunci Jawaban'],['set','Pengaturan']]
-  :[['b1','Board 1 · Individu'],['b2','Board 2 · Kelompok'],['b3','Board 3 · Final'],['skor','Skor']];
+ const tabs=guru?[['home','Beranda'],['siswa','Murid & Kelompok'],['b1','Tantangan 1'],['b2','Tantangan 2'],['b3','Tantangan 3'],['kunci','Kunci Jawaban'],['set','Pengaturan']]
+  :[['b1','Tantangan 1 · Individu'],['b2','Tantangan 2 · Kelompok'],['b3','Tantangan 3 · Final'],['skor','Skor']];
  if(!tabs.some(t=>t[0]===ui.tab))ui.tab=tabs[0][0];
  const views={home:vHome,siswa:vSiswa,b1:()=>vB1(me),b2:()=>vB2(me),b3:()=>vB3(me),kunci:vKunci,set:vSet,skor:()=>vSkor(me)};
  a.innerHTML=`<header class="top"><h1>SD Quest <small>Misi Pecahan · ${guru?'Akses Guru':'Akses Murid'}</small></h1>
@@ -358,22 +358,22 @@ function landing(){
 
 function teamTable(){
  const r=rankTeams();
- return `<table><tr><th>#</th><th>Tim</th><th>Anggota</th><th class="n">Board 1</th><th class="n">Board 2</th><th class="n">Total</th><th class="n">Final</th></tr>
+ return `<table><tr><th>#</th><th>Tim</th><th>Anggota</th><th class="n">Tantangan 1</th><th class="n">Tantangan 2</th><th class="n">Total</th><th class="n">Final</th></tr>
  ${r.map((t,i)=>`<tr><td>${i+1}</td><td><b style="color:${tcol(t)}">${esc(tname(t))}</b>${S.b3.fin&&S.b3.fin.includes(t)?' 🏅':''}</td><td class="meta">${S.students.filter(s=>s.team===t).length} murid</td>
  <td class="n">${tB1(t)}</td><td class="n">${tB2(t)}</td><td class="n"><b>${tTot(t)}</b></td><td class="n">${S.b3.fin&&S.b3.fin.includes(t)?tB3(t):'–'}</td></tr>`).join('')}</table>
- <p class="meta">${S.incB1?'Total = skor Board 1 (jumlah poin anggota) + Board 2.':'Total = skor Board 2 saja (Board 1 tidak dihitung ke tim).'} Dua tim dengan total tertinggi (🏅) masuk Grand Final.</p>`}
+ <p class="meta">${S.incB1?'Total = skor Tantangan 1 (jumlah poin anggota) + Tantangan 2.':'Total = skor Tantangan 2 saja (Tantangan 1 tidak dihitung ke tim).'} Dua tim dengan total tertinggi (🏅) masuk Grand Final.</p>`}
 function indTable(n){const r=[...S.students].sort((a,b)=>sB1(b.id)-sB1(a.id)).slice(0,n);
- return `<table><tr><th>#</th><th>Murid</th><th>Tim</th><th class="n">Poin Board 1</th></tr>${r.map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td style="color:${tcol(s.team)}">${esc(tname(s.team))}</td><td class="n">${sB1(s.id)}</td></tr>`).join('')}</table>`}
+ return `<table><tr><th>#</th><th>Murid</th><th>Tim</th><th class="n">Poin Tantangan 1</th></tr>${r.map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td style="color:${tcol(s.team)}">${esc(tname(s.team))}</td><td class="n">${sB1(s.id)}</td></tr>`).join('')}</table>`}
 
 function vHome(){
  const on=b=>S.open[b];
  return `<div class="panel"><h2>Buka / tutup papan</h2><div class="row">
- ${[1,2,3].map(b=>`<button class="${on(b)?'green':'ghost'}" data-a="open" data-b="${b}">Board ${b}: ${on(b)?'DIBUKA':'ditutup'}</button>`).join('')}</div>
- <p class="meta">Murid hanya dapat menjawab pada papan yang dibuka. Board 1 = tantangan individu, Board 2 = rebut poin antar kelompok, Board 3 = Grand Final dua tim terbaik.</p></div>
+ ${[1,2,3].map(b=>`<button class="${on(b)?'green':'ghost'}" data-a="open" data-b="${b}">Tantangan ${b}: ${on(b)?'DIBUKA':'ditutup'}</button>`).join('')}</div>
+ <p class="meta">Murid hanya dapat menjawab pada papan yang dibuka. Tantangan 1 = tantangan individu, Tantangan 2 = rebut poin antar kelompok, Tantangan 3 = Grand Final dua tim terbaik.</p></div>
  <div class="panel"><h2>Papan skor tim</h2>${teamTable()}
  <div class="row" style="margin-top:10px"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas sebagai finalis</button>
  ${S.b3.fin?`<span class="chipu">Finalis: ${S.b3.fin.map(t=>esc(tname(t))).join(' vs ')}</span>`:'<span class="meta">Finalis belum ditetapkan.</span>'}</div></div>
- <div class="panel"><h2>10 besar individu (Board 1)</h2>${indTable(10)}</div>`}
+ <div class="panel"><h2>10 besar individu (Tantangan 1)</h2>${indTable(10)}</div>`}
 
 function vSiswa(){
  return `<div class="panel"><h2>Murid & kelompok</h2>
@@ -388,8 +388,8 @@ document.addEventListener('change',e=>{if(e.target.id==='nT')A.nT()});
 
 function vB1(me){
  const sc=me?`<div class="banner">Skormu: <b>${sB1(me.id)}</b> poin · Peringkat <b>${[...S.students].sort((a,b)=>sB1(b.id)-sB1(a.id)).findIndex(s=>s.id===me.id)+1}</b> dari ${S.students.length}</div>`:'';
- return `<div class="panel"><h2>Board 1 · Tantangan Individu</h2><p class="meta">Pilih soal yang ingin kamu kerjakan. Level ★ = 10 poin, ★★ = 20 poin, ★★★ = 30 poin. Soal bercampur dari yang mudah sampai paling sulit. Jawaban salah tidak mengurangi poin, kamu boleh mencoba lagi.</p>
- ${me&&!S.open[1]?'<div class="notice">Board 1 belum dibuka guru.</div>':''}${sc}
+ return `<div class="panel"><h2>Tantangan 1 · Tantangan Individu</h2><p class="meta">Pilih soal yang ingin kamu kerjakan. Level ★ = 10 poin, ★★ = 20 poin, ★★★ = 30 poin. Soal bercampur dari yang mudah sampai paling sulit. Jawaban salah tidak mengurangi poin, kamu boleh mencoba lagi.</p>
+ ${me&&!S.open[1]?'<div class="notice">Tantangan 1 belum dibuka guru.</div>':''}${sc}
  <div class="grid">${B1.map((q,i)=>{const c=S.b1.claims[q.id];
   return `<button class="card l${q.l} ${c?'done':''}" data-a="b1q" data-i="${i}" ${c&&me?'aria-disabled="true"':''}><span class="no">No ${i+1}</span><span><span class="st">${'★'.repeat(q.l)}</span>${c?`<br><span class="who2">✔ ${esc(stu(c.sid)?.name||'')}</span>`:''}</span></button>`}).join('')}</div>
  <p class="meta">Terjawab: ${Object.keys(S.b1.claims).length} / ${B1.length}</p></div>
@@ -398,9 +398,9 @@ function vB1(me){
 function vB2(me){
  const b=S.b2,cur=b.cur,guru=!me,q=cur!=null?B2[cur]:null,fin=q&&b.done[cur];
  const myT=me?me.team:null;
- let h=`<div class="panel"><h2>Board 2 · Clash of Calculation (Rebut Poin)</h2>
+ let h=`<div class="panel"><h2>Tantangan 2 · Clash of Calculation (Rebut Poin)</h2>
  <p class="meta">Guru menampilkan soal. Tim yang lebih dulu membunyikan bel berhak menjawab. Jika salah, tim lain mendapat kesempatan (tanpa pengurangan poin). Setiap soal bernilai ${B2PTS} poin.</p>
- ${me&&!S.open[2]?'<div class="notice">Board 2 belum dibuka guru.</div>':''}
+ ${me&&!S.open[2]?'<div class="notice">Tantangan 2 belum dibuka guru.</div>':''}
  <div class="teams">${teamIds().map(t=>`<div class="team" style="--tc:${tcol(t)}"><h3>${esc(tname(t))}</h3><div class="s">${tB2(t)}</div></div>`).join('')}</div></div>`;
  h+=`<div class="panel"><h2>Soal</h2><div class="row">${B2.map((x,i)=>`<button class="${b.done[i]?'ghost':(i===cur?'cyan':'')}" ${guru?`data-a="b2start" data-i="${i}"`:'disabled'}>Soal ${i+1}${b.done[i]?(b.done[i].team!=null?' ✔':' ✘'):''}</button>`).join('')}</div>
  ${guru?'<p class="meta">Klik nomor untuk menampilkan soal ke murid.</p>':''}`;
@@ -422,8 +422,8 @@ function vB2(me){
 
 function vB3(me){
  const b=S.b3,guru=!me;
- let h=`<div class="panel"><h2>Board 3 · Grand Final Champion</h2><p class="meta">Dua tim dengan nilai tertinggi bersaing. Soal ada di lembar fisik; di layar hanya tersedia kode soal. Pilih kode, baca soalnya di lembar, lalu ketik jawabannya. Benar +${B3PTS} poin. Jika salah, lawan mendapat kesempatan.</p>
- ${me&&!S.open[3]?'<div class="notice">Board 3 belum dibuka guru.</div>':''}`;
+ let h=`<div class="panel"><h2>Tantangan 3 · Grand Final Champion</h2><p class="meta">Dua tim dengan nilai tertinggi bersaing. Soal ada di lembar fisik; di layar hanya tersedia kode soal. Pilih kode, baca soalnya di lembar, lalu ketik jawabannya. Benar +${B3PTS} poin. Jika salah, lawan mendapat kesempatan.</p>
+ ${me&&!S.open[3]?'<div class="notice">Tantangan 3 belum dibuka guru.</div>':''}`;
  if(!b.fin){
   h+=`<div class="notice">Finalis belum ditetapkan oleh guru.</div>`;
   if(guru)h+=`<div class="row"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas</button><span class="meta">atau pilih manual:</span>
@@ -438,7 +438,7 @@ function vB3(me){
  h+=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(110px,1fr))">${B3.map((q,i)=>{const d=b.done[i],lock=b.relay&&b.relay.i!==i;
   return `<button class="card code ${d?'done':''} ${lock?'lock':''}" data-a="b3q" data-i="${i}" style="${d&&d.team!=null?'border-color:'+tcol(d.team):''}"><span class="no">${q.code}</span>${d?`<span class="who2" style="text-align:center">${d.team!=null?esc(tname(d.team)):'✘'}</span>`:''}</button>`}).join('')}</div>
  <p class="meta">Kartu terpakai: ${Object.keys(b.done).length} / ${B3.length}</p>`;
- if(guru)h+=`<div class="row"><button class="ghost" data-a="b3turn">Ganti giliran</button><button class="cyan" data-a="b3end">Umumkan juara</button><button class="red" data-a="resetB" data-b="b3">Reset Board 3</button></div>`;
+ if(guru)h+=`<div class="row"><button class="ghost" data-a="b3turn">Ganti giliran</button><button class="cyan" data-a="b3end">Umumkan juara</button><button class="red" data-a="resetB" data-b="b3">Reset Tantangan 3</button></div>`;
  return h+'</div>'}
 
 function vSkor(me){return `<div class="panel"><h2>Skor tim</h2>${teamTable()}</div>
@@ -447,15 +447,15 @@ function vSkor(me){return `<div class="panel"><h2>Skor tim</h2>${teamTable()}</d
 
 function vKunci(){
  const k=a=>fx(esc(a));
- return `<div class="panel"><h2>Board 1 · Kunci (urutan nomor di papan)</h2><table><tr><th>No</th><th>Lv</th><th>Soal</th><th>Kunci</th></tr>${B1.map((q,i)=>`<tr><td>${i+1}</td><td>${'★'.repeat(q.l)}</td><td>${fx(q.q)}</td><td><b>${k(q.a)}</b></td></tr>`).join('')}</table></div>
- <div class="panel"><h2>Board 2 · Kunci & pembahasan</h2><table>${B2.map((q,i)=>`<tr><td>${i+1}</td><td>${fx(q.q)}</td><td><b>${k(q.a)}</b><br><span class="meta">${fx(q.e)}</span></td></tr>`).join('')}</table></div>
- <div class="panel"><h2>Board 3 · Kode soal (cocokkan dengan lembar fisik)</h2><table><tr><th>Kode</th><th>Soal</th><th>Kunci</th></tr>${B3.map(q=>`<tr><td><b>${q.code}</b></td><td>${fx(q.q)}</td><td><b>${esc(q.a)}</b></td></tr>`).join('')}</table></div>`}
+ return `<div class="panel"><h2>Tantangan 1 · Kunci (urutan nomor di papan)</h2><table><tr><th>No</th><th>Lv</th><th>Soal</th><th>Kunci</th></tr>${B1.map((q,i)=>`<tr><td>${i+1}</td><td>${'★'.repeat(q.l)}</td><td>${fx(q.q)}</td><td><b>${k(q.a)}</b></td></tr>`).join('')}</table></div>
+ <div class="panel"><h2>Tantangan 2 · Kunci & pembahasan</h2><table>${B2.map((q,i)=>`<tr><td>${i+1}</td><td>${fx(q.q)}</td><td><b>${k(q.a)}</b><br><span class="meta">${fx(q.e)}</span></td></tr>`).join('')}</table></div>
+ <div class="panel"><h2>Tantangan 3 · Kode soal (cocokkan dengan lembar fisik)</h2><table><tr><th>Kode</th><th>Soal</th><th>Kunci</th></tr>${B3.map(q=>`<tr><td><b>${q.code}</b></td><td>${fx(q.q)}</td><td><b>${esc(q.a)}</b></td></tr>`).join('')}</table></div>`}
 
 function vSet(){
  return `<div class="panel"><h2>Pengaturan</h2>
  <p class="row"><input id="npin" placeholder="PIN baru"><button class="cyan" data-a="setPin">Ganti PIN guru</button></p>
- <p><label><input type="checkbox" id="inc" ${S.incB1?'checked':''} onchange="A.incB1()"> Skor Board 1 anggota ikut dihitung ke total tim (untuk menentukan finalis)</label></p>
- <div class="row"><button class="red" data-a="resetB" data-b="b1">Reset Board 1</button><button class="red" data-a="resetB" data-b="b2">Reset Board 2</button><button class="red" data-a="resetB" data-b="b3">Reset Board 3</button><button class="red" data-a="resetB" data-b="all">Reset SEMUA</button></div>
+ <p><label><input type="checkbox" id="inc" ${S.incB1?'checked':''} onchange="A.incB1()"> Skor Tantangan 1 anggota ikut dihitung ke total tim (untuk menentukan finalis)</label></p>
+ <div class="row"><button class="red" data-a="resetB" data-b="b1">Reset Tantangan 1</button><button class="red" data-a="resetB" data-b="b2">Reset Tantangan 2</button><button class="red" data-a="resetB" data-b="b3">Reset Tantangan 3</button><button class="red" data-a="resetB" data-b="all">Reset SEMUA</button></div>
  <p class="meta">Data tersimpan di peramban perangkat ini (localStorage). Beberapa tab pada peramban yang sama saling tersinkron.</p></div>`}
 
 render();
