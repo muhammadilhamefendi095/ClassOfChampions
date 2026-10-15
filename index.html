@@ -351,7 +351,7 @@ function render(){
 
 function landing(){
  const by=[...S.students].sort((a,b)=>a.name.localeCompare(b.name,'id',{numeric:true}));
- return `<header class="top"><h1>Class Of Champion Kera-kera <small>Misi Pecahan · Persen · Desimal</small></h1></header>
+ return `<header class="top"><h1>Clash Of Champion Kera-kera <small>Misi Pecahan · Persen · Desimal</small></h1></header>
  <div class="landing"><div class="panel"><h2>👩‍🏫 Masuk sebagai Guru</h2><p class="meta">Kelola murid, buka papan, pantau skor, dan lihat kunci jawaban.</p>
   <div class="row"><input id="pin" type="password" placeholder="PIN guru" inputmode="numeric" onkeydown="if(event.key==='Enter')A.glogin()"><button class="cyan" data-a="glogin">Masuk</button></div><p class="meta">PIN awal: 1234 (bisa diganti di Pengaturan).</p></div>
  <div class="panel"><h2>🧒 Masuk sebagai Murid</h2><p class="meta">Ketuk namamu.</p><div class="names">${by.map(s=>`<button data-a="mlogin" data-sid="${s.id}" style="--tc:${tcol(s.team)}">${esc(s.name)}</button>`).join('')}</div></div></div>`}
