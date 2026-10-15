@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title> clash Of Champion Kera-kera – Misi Pecahan</title>
+<title> Clash Of Champion Kera-kera – Misi Pecahan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -344,7 +344,7 @@ function render(){
   :[['b1','Tantangan 1 · Individu'],['b2','Tantangan 2 · Kelompok'],['b3','Tantangan 3 · Final'],['skor','Skor']];
  if(!tabs.some(t=>t[0]===ui.tab))ui.tab=tabs[0][0];
  const views={home:vHome,siswa:vSiswa,b1:()=>vB1(me),b2:()=>vB2(me),b3:()=>vB3(me),kunci:vKunci,set:vSet,skor:()=>vSkor(me)};
- a.innerHTML=`<header class="top"><h1>Class Of Champion Kera-kera <small>Misi Pecahan · ${guru?'Akses Guru':'Akses Murid'}</small></h1>
+ a.innerHTML=`<header class="top"><h1>Clash Of Champion Kera-kera <small>Misi Pecahan · ${guru?'Akses Guru':'Akses Murid'}</small></h1>
  <div class="who">${me?`<span class="chipu" style="--tc:${tcol(me.team)}">${esc(me.name)} · Tim ${esc(tname(me.team))}</span>`:'<span class="chipu">👩‍🏫 Guru</span>'}
  <button class="mute" data-a="mute" aria-label="Suara">${S.snd?'🔊':'🔇'}</button><button class="ghost" data-a="logout">Keluar</button></div></header>
  <nav class="tabs">${tabs.map(t=>`<button class="tab ${t[0]===ui.tab?'on':''}" data-a="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</nav>${views[ui.tab]()}`}
