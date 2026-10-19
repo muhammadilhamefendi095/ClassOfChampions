@@ -275,9 +275,9 @@ function dataExcel(){
  B2.forEach((q,i)=>{const d=S.b2.done[i];t2.push([i+1,bersih(q.q),bersih(q.a),d&&d.team!=null?tname(d.team):'',d?d.p:'',d?(d.team!=null?'Direbut':'Ditutup tanpa pemenang'):'Belum']);});
  const t3=[['Kode','Soal','Kunci','Diselesaikan oleh tim','Poin']];
  B3.forEach((q,i)=>{const d=S.b3.done[i];t3.push([q.code,bersih(q.q),bersih(q.a),d&&d.team!=null?tname(d.team):'',d&&d.team!=null?d.p:''])});
- return[['Nilai Siswa',mur],['Rincian Tantangan 1',t1]]}
+ return[['Poin Permainan Siswa',mur],['Rincian Tantangan 1',t1]]}
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
-function unduhExcel(){const sheets=dataExcel(),nama='nilai-siswa-'+new Date().toISOString().slice(0,10);toast('Menyiapkan file…');
+function unduhExcel(){const sheets=dataExcel(),nama='poin-permainan-siswa-'+new Date().toISOString().slice(0,10);toast('Menyiapkan file…');
  loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js').then(()=>{const wb=XLSX.utils.book_new();
   sheets.forEach(([n,d])=>{const ws=XLSX.utils.aoa_to_sheet(d);ws['!cols']=d[0].map((_,c)=>({wch:Math.min(60,Math.max(...d.map(r=>String(r[c]).length))+2)}));XLSX.utils.book_append_sheet(wb,ws,n)});
   XLSX.writeFile(wb,nama+'.xlsx')})
@@ -396,7 +396,7 @@ function vHome(){
  ${[1,2,3].map(b=>`<button class="${on(b)?'green':'ghost'}" data-a="open" data-b="${b}">Tantangan ${b}: ${on(b)?'DIBUKA':'ditutup'}</button>`).join('')}</div>
  <p class="meta">Murid hanya dapat menjawab pada papan yang dibuka. Tantangan 1 = tantangan individu, Tantangan 2 = rebut poin antar kelompok, Tantangan 3 = Grand Final dua tim terbaik.</p></div>
  <div class="panel"><h2>Papan skor tim</h2>${teamTable()}
- <div class="row" style="margin-top:10px"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas sebagai finalis</button><button class="green" data-a="unduh">⬇️ Unduh nilai siswa (Excel)</button>
+ <div class="row" style="margin-top:10px"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas sebagai finalis</button><button class="green" data-a="unduh">⬇️ Unduh poin permainan siswa (Excel)</button>
  ${S.b3.fin?`<span class="chipu">Finalis: ${S.b3.fin.map(t=>esc(tname(t))).join(' vs ')}</span>`:'<span class="meta">Finalis belum ditetapkan.</span>'}</div></div>
  <div class="panel"><h2>10 besar individu (Tantangan 1 + 2)</h2>${indTable(10)}</div>`}
 
