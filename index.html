@@ -267,17 +267,17 @@ function dataExcel(){
  const bersih=t=>String(t).replace(/\{(\d+)\/(\d+)\}/g,'$1/$2');
  const tim=[['Peringkat','Tim','Jumlah anggota','Tantangan 1','Tantangan 2','Total','Tantangan 3 (final)']];
  rankTeams().forEach((t,i)=>tim.push([i+1,tname(t),S.students.filter(s=>s.team===t).length,tB1(t),tB2(t),tTot(t),S.b3.fin&&S.b3.fin.includes(t)?tB3(t):'']));
- const mur=[['No','Nama','Tim','Tantangan 1','Tantangan 2 (bagi rata)','Total','Soal Tantangan 1 yang benar (No)']];
- S.students.forEach((s,i)=>mur.push([i+1,s.name,tname(s.team),sB1(s.id),sB2(s.id),sTot(s.id),B1.map((q,k)=>[q,k+1]).filter(([q])=>(S.b1.claims[q.id]||{}).sid===s.id).map(x=>x[1]).join(', ')]));
+ const mur=[['No','Nama','Tantangan 1','Tantangan 2 (bagi rata)','Total','Jumlah soal Tantangan 1 benar','Nomor soal Tantangan 1 yang benar']];
+ S.students.forEach((s,i)=>{const ok=B1.map((q,k)=>[q,k+1]).filter(([q])=>(S.b1.claims[q.id]||{}).sid===s.id).map(x=>x[1]);mur.push([i+1,s.name,sB1(s.id),sB2(s.id),sTot(s.id),ok.length,ok.join(', ')])});
  const t1=[['No','Level','Soal','Kunci','Dijawab benar oleh','Poin','Jumlah percobaan (semua murid)']];
  B1.forEach((q,i)=>{const c=S.b1.claims[q.id],att=S.students.reduce((a,s)=>a+(S.b1.att[s.id+'|'+q.id]||0),0);t1.push([i+1,'★'.repeat(q.l),bersih(q.q),bersih(q.a),c?((stu(c.sid)||{}).name||''):'',c?c.p:'',att])});
  const t2=[['Soal','Pertanyaan','Kunci','Pemenang','Poin tim','Status']];
  B2.forEach((q,i)=>{const d=S.b2.done[i];t2.push([i+1,bersih(q.q),bersih(q.a),d&&d.team!=null?tname(d.team):'',d?d.p:'',d?(d.team!=null?'Direbut':'Ditutup tanpa pemenang'):'Belum']);});
  const t3=[['Kode','Soal','Kunci','Diselesaikan oleh tim','Poin']];
  B3.forEach((q,i)=>{const d=S.b3.done[i];t3.push([q.code,bersih(q.q),bersih(q.a),d&&d.team!=null?tname(d.team):'',d&&d.team!=null?d.p:''])});
- return[['Skor Tim',tim],['Skor Murid',mur],['Tantangan 1',t1],['Tantangan 2',t2],['Tantangan 3',t3]]}
+ return[['Nilai Siswa',mur],['Rincian Tantangan 1',t1]]}
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
-function unduhExcel(){const sheets=dataExcel(),nama='hasil-class-of-champion-'+new Date().toISOString().slice(0,10);toast('Menyiapkan file…');
+function unduhExcel(){const sheets=dataExcel(),nama='nilai-siswa-'+new Date().toISOString().slice(0,10);toast('Menyiapkan file…');
  loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js').then(()=>{const wb=XLSX.utils.book_new();
   sheets.forEach(([n,d])=>{const ws=XLSX.utils.aoa_to_sheet(d);ws['!cols']=d[0].map((_,c)=>({wch:Math.min(60,Math.max(...d.map(r=>String(r[c]).length))+2)}));XLSX.utils.book_append_sheet(wb,ws,n)});
   XLSX.writeFile(wb,nama+'.xlsx')})
@@ -396,7 +396,7 @@ function vHome(){
  ${[1,2,3].map(b=>`<button class="${on(b)?'green':'ghost'}" data-a="open" data-b="${b}">Tantangan ${b}: ${on(b)?'DIBUKA':'ditutup'}</button>`).join('')}</div>
  <p class="meta">Murid hanya dapat menjawab pada papan yang dibuka. Tantangan 1 = tantangan individu, Tantangan 2 = rebut poin antar kelompok, Tantangan 3 = Grand Final dua tim terbaik.</p></div>
  <div class="panel"><h2>Papan skor tim</h2>${teamTable()}
- <div class="row" style="margin-top:10px"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas sebagai finalis</button><button class="green" data-a="unduh">⬇️ Unduh hasil (Excel)</button>
+ <div class="row" style="margin-top:10px"><button class="cyan" data-a="setFin">Tetapkan 2 tim teratas sebagai finalis</button><button class="green" data-a="unduh">⬇️ Unduh nilai siswa (Excel)</button>
  ${S.b3.fin?`<span class="chipu">Finalis: ${S.b3.fin.map(t=>esc(tname(t))).join(' vs ')}</span>`:'<span class="meta">Finalis belum ditetapkan.</span>'}</div></div>
  <div class="panel"><h2>10 besar individu (Tantangan 1 + 2)</h2>${indTable(10)}</div>`}
 
