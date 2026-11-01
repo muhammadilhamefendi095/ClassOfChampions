@@ -7,7 +7,7 @@ const VOICE={landing:'Selamat datang di Class of Champions! Siapkan dirimu untuk
 
 const st=document.createElement('style');
 st.textContent=`#bgimg{position:fixed;inset:0;z-index:-1;background:center/cover no-repeat;filter:blur(9px) brightness(.42) saturate(1.2);transform:scale(1.12);pointer-events:none;transition:opacity .4s}
-.hero{position:relative;width:100%;max-width:780px;margin:12px auto;border-radius:16px;border:2px solid var(--cy);background:#000 center/100% 100% no-repeat;box-shadow:0 0 34px #35e0ff66}
+.hero{position:relative;width:100%;max-width:780px;margin:12px auto;border-radius:16px;border:2px solid var(--cy);background:#000 center/100% 100% no-repeat;filter:none;backdrop-filter:none;box-shadow:0 0 34px #35e0ff66}
 .hero button{position:absolute;right:10px;bottom:10px;padding:.35em .7em}`;
 document.head.appendChild(st);
 const bg=document.createElement('div');bg.id='bgimg';document.body.prepend(bg);
@@ -77,7 +77,7 @@ function decorate(){
  if(a.querySelector('.hero'))return;
  const i=IMG[key],h=document.createElement('div');h.className='hero';h.setAttribute('role','img');
  h.setAttribute('aria-label',{landing:'Clash of Champions',b1:'Choose Your Level',b2:'Clash of Calculation',b3:'The Grand Champion'}[key]);
- h.style.backgroundImage=`url(${i.src})`;h.style.aspectRatio=i.w+'/'+i.h;
+ h.style.backgroundImage=`url(${i.src})`;h.style.aspectRatio=i.w+'/'+i.h;h.style.maxWidth=Math.min(780,i.w)+'px';/* jangan diperbesar melebihi ukuran asli agar tetap tajam */
  if(key==='landing')h.innerHTML='<button class="cyan" data-a="voice" aria-label="Putar sambutan">🔊 Putar sambutan</button>';
  if(key==='landing')a.querySelector('header.top')?.after(h);else a.querySelector('.panel')?.before(h)}
 new MutationObserver(decorate).observe(document.getElementById('app'),{childList:true});
